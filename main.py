@@ -1,5 +1,5 @@
 """
-Fun: CNN for CIFAR10 classification
+Fun: CNN for MNIST classification
 """
 
 
@@ -19,6 +19,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from model import CNNModel
+from utils import str2bool
 
 
 ## input hyper-paras
@@ -33,9 +34,10 @@ parser.add_argument("-decay", dest ="decay", type=float, default=0.5, help = "le
 parser.add_argument("-batch_size", dest="batch_size", type=int, default=100, help="batch size")
 parser.add_argument("-dropout", dest ="dropout", type=float, default=0.4, help = "dropout prob")
 parser.add_argument("-rotation", dest="rotation", type=int, default=10, help="image rotation")
+parser.add_argument("-load_checkpoint", dest="load_checkpoint", type=str2bool, default=True, help="true of false")
 
 parser.add_argument("-activation", dest="activation", type=str, default='relu', help="activation function")
-parser.add_argument("-MC", dest='MC', type=int, default=10, help="number of monte carlo")
+# parser.add_argument("-MC", dest='MC', type=int, default=10, help="number of monte carlo")
 parser.add_argument("-channel_out1", dest='channel_out1', type=int, default=64, help="number of channels")
 parser.add_argument("-channel_out2", dest='channel_out2', type=int, default=64, help="number of channels")
 parser.add_argument("-k_size", dest='k_size', type=int, default=4, help="size of filter")
@@ -66,7 +68,7 @@ def _load_data(DATA_PATH, batch_size):
 
 
 
-def _compute_accuracy(args):
+def _compute_accuracy(y_pred, y_batch):
 	## please write the code below ##
 	return (y_pred==y_batch).sum().item()
 	
@@ -87,17 +89,17 @@ def adjust_learning_rate(learning_rate, optimizer, epoch, decay):
 	# print("learning_rate: ", lr)
 	
 	
-
-def _test_model(model):
-	## please write the code below ##
-
-	return None
+# def _test_model(model):
+# 	## you do not have to write it here ##
+	
+# 	return None
 	
 
 def main():
 
 	use_cuda = torch.cuda.is_available() ## if have gpu or cpu 
 	device = torch.device("cuda" if use_cuda else "cpu")
+	# print(device)
 	if use_cuda:
 		torch.cuda.manual_seed(72)
 
@@ -105,7 +107,7 @@ def main():
 	num_epoches = args.num_epoches
 	decay = args.decay
 	learning_rate = args.learning_rate
-
+	
 
 	## Load data
 	DATA_PATH = "./data/"
@@ -123,13 +125,16 @@ def main():
 	## please write the LOSS FUNCTION ##
 	## --------------------------------------------------
 	optimizer = optim.Adam(model.parameters(),lr=learning_rate)  ## optimizer
-	loss_fun =     ## cross entropy loss
+	loss_fun =    ## cross entropy loss
 	
+	##--------------------------------------------
+	## load checkpoint below if you need
+	##--------------------------------------------
+	# if args.load_checkpoint == True:
+		## write load checkpoint code below
 
 	
-	##----------------------------------------
-	##  model training code below
-	##----------------------------------------
+	##  model training
 	if args.mode == 'train':
 		model = model.train()
 		for epoch in range(num_epoches): #10-50
@@ -142,31 +147,39 @@ def main():
 				## feed input data x into model
 				output_y = model(x_batch)
 				
-				##----------------------------------------
-				## write loss function below
-				##----------------------------------------
-
+				##---------------------------------------------------
+				## write loss function below, refer to tutorial slides
+				##----------------------------------------------------
+				loss = 
+				
 
 				##----------------------------------------
 				## write back propagation below
 				##----------------------------------------
+				
 
-
-				##-------------------------------------------------
-				## get the predict result and then compute accuracy
-				##-------------------------------------------------
+				##------------------------------------------------------
+				## get the predict result and then compute accuracy below
+				## please refer to defined _compute_accuracy() above
+				##------------------------------------------------------
 				_, y_pred = torch.max(output_y.data, 1)
 				
 				
 				##----------------------------------------------------------
-				## or use tensorboard to monitor the training accuracy below
+				## loss.item() or use tensorboard to monitor the loss blow
+				## if use loss.item(), you may use log txt files to save loss
 				##----------------------------------------------------------
 				
+
+			## -------------------------------------------------------------------
+			## save checkpoint below (optional), every "epoch" save one checkpoint
+			## -------------------------------------------------------------------
+			
+			
 				
 
-	
 	##------------------------------------
-	## model testing code below
+	##    model testing code below
 	##------------------------------------
 	model.eval()
 	with torch.no_grad():
@@ -175,8 +188,12 @@ def main():
 			##------------------------------------
 			## write the predict result below
 			##------------------------------------
+			
 
-			## compute the accuracy below
+			##--------------------------------------------------
+			## write code for computing the accuracy below
+			## please refer to defined _compute_accuracy() above
+			##---------------------------------------------------
 			
 	
 		
@@ -186,5 +203,3 @@ if __name__ == '__main__':
 	main()
 	time_end = time.time()
 	print("running time: ", (time_end - time_start)/60.0, "mins")
-	
-

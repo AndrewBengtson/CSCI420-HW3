@@ -11,38 +11,51 @@ class CNNModel(nn.Module):
 	
 	def __init__(self, args):
 		super(CNNModel, self).__init__()
-		##--------------------------------------------------------
+		##-----------------------------------------------------------
 		## define the model architecture here
-		## image input size batch * 28 * 28
-		##--------------------------------------------------------
+		## MNIST image input size batch * 28 * 28 (one input channel)
+		##-----------------------------------------------------------
 		
 		## define CNN layers below
-		
-		
-		## define fully connected layer below
+		self.conv = nn.sequential( 	# nn.Conv2d(in_channels,...),
+									# activation fun,
+									# dropout,
+									# nn.Conv2d(in_channels,...),
+									# activation fun,
+									# dropout,
+									## continue like above,
+									## **define pooling (bonus)**,
+								)
+
+		##------------------------------------------------
+		## write code to define fully connected layer below
+		##------------------------------------------------
+		in_size = 
+		out_size = 
 		self.fc = nn.Linear(in_size, out_size)
 		
 
 	'''feed features to the model'''
-	def forward(self, x):
-		##---------------------------------------------------
-		## feed input features to the models defined above
-		##---------------------------------------------------
+	def forward(self, x):  #default
+		
+		##---------------------------------------------------------
+		## write code to feed input features to the CNN models defined above
+		##---------------------------------------------------------
+		x_out = 
+
+		## write flatten tensor code below (it is done)
+		x = torch.flatten(x_out,1) # x_out is output of last layer
 		
 
-		## write flatten tensor code below
-		x = torch.flatten(x,1)
-
-		## --------------------------------------------------
+		## ---------------------------------------------------
 		## write fully connected layer (Linear layer) below
-		## --------------------------------------------------
+		## ---------------------------------------------------
+		result =   # predict y
 		
-
-
-		return results
+		
+		return result
         
 		
 		
-		
-
+	
 		
