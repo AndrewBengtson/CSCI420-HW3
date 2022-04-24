@@ -72,7 +72,7 @@ def _load_data(DATA_PATH, batch_size):
 
 def _compute_accuracy(y_pred, y_batch):
 	## please write the code below ##
-	return (y_pred==y_batch).sum().item()
+	return (y_pred==y_batch).sum().item()/len(y_batch)
 	
 
 
@@ -187,6 +187,7 @@ def main():
 	##------------------------------------
 	model.eval()
 	with torch.no_grad():
+		accuracies = []
 		for batch_id, (x_batch,y_labels) in enumerate(test_loader):
 			x_batch, y_labels = Variable(x_batch).to(device), Variable(y_labels).to(device)
 			##------------------------------------
@@ -198,8 +199,9 @@ def main():
 			## write code for computing the accuracy below
 			## please refer to defined _compute_accuracy() above
 			##---------------------------------------------------
-			accuracy = _compute_accuracy(output_y,y_labels)
-			print("final testing accuracy is"+str(accuracy))
+			_, y_pred = torch.max(output_y.data, 1)
+			accuracies.append(_compute_accuracy(y_pred,y_labels))
+		print("final testing accuracy is"+str(sum(accuracies)/len(accuracies)))
 	
 		
 
