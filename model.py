@@ -18,13 +18,13 @@ class CNNModel(nn.Module):
 		
 		## define CNN layers below
 		#sequential means it will automatically feed
-		self.conv = nn.Sequential( 	nn.Conv2d(1,16,2,2),
+		self.conv = nn.Sequential( 	nn.Conv2d(1,32,2,2),
 									nn.ReLU(),
 									nn.Dropout(p=0.2),
-									nn.Conv2d(16,8,2,2),
+									nn.Conv2d(32,16,2,2),
 									nn.ReLU(),
 									nn.Dropout(p=0.2),
-									nn.Conv2d(8,6,2,2),
+									nn.Conv2d(16,6,2,2),
 
 								)
 
