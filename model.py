@@ -9,7 +9,7 @@ import torch
 class CNNModel(nn.Module):
 	"""docstring for ClassName"""
 	
-	def __init__(self, args):
+	def __init__(self):
 		super(CNNModel, self).__init__()
 		##-----------------------------------------------------------
 		## define the model architecture here
@@ -18,14 +18,14 @@ class CNNModel(nn.Module):
 		
 		## define CNN layers below
 		#sequential means it will automatically feed
-		self.conv = nn.sequential( 	nn.Conv2d(1,10,2,2),
-									nn.ReLu(),
+		self.conv = nn.Sequential( 	nn.Conv2d(1,10,2,2),
+									nn.ReLU(),
 									nn.Dropout(p=0.2),
 									nn.Conv2d(10,8,2,2),
-									nn.ReLu(),
+									nn.ReLU(),
 									nn.Dropout(p=0.2),
 									nn.Conv2d(8,6,2,2),
-									nn.ReLu(),
+									nn.ReLU(),
 									nn.Dropout(p=0.2),
 									nn.Conv2d(6,4,2,2),
 
@@ -34,7 +34,7 @@ class CNNModel(nn.Module):
 		##------------------------------------------------
 		## write code to define fully connected layer below
 		##------------------------------------------------
-		in_size = 4*28*28
+		in_size = 4
 		out_size = 10 #this is because we have 10 different categories we are attempting to predict
 		self.fc = nn.Linear(in_size, out_size)
 		

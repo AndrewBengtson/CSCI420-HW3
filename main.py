@@ -15,14 +15,15 @@ import torch.optim as optim
 # from util import _create_batch
 import json
 import torchvision
-# from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from model import CNNModel
-from utils import str2bool
+#from utils import str2bool
 
 
 ## input hyper-paras
+## we can add these or comment them out as neccessary
 parser = argparse.ArgumentParser(description = "nueral networks")
 parser.add_argument("-mode", dest="mode", type=str, default='train', help="train or test")
 parser.add_argument("-num_epoches", dest="num_epoches", type=int, default=40, help="num of epoches")
@@ -34,10 +35,11 @@ parser.add_argument("-decay", dest ="decay", type=float, default=0.5, help = "le
 parser.add_argument("-batch_size", dest="batch_size", type=int, default=100, help="batch size")
 parser.add_argument("-dropout", dest ="dropout", type=float, default=0.4, help = "dropout prob")
 parser.add_argument("-rotation", dest="rotation", type=int, default=10, help="image rotation")
-parser.add_argument("-load_checkpoint", dest="load_checkpoint", type=str2bool, default=True, help="true of false")
+#parser.add_argument("-load_checkpoint", dest="load_checkpoint", type=str2bool, default=True, help="true of false")
 
 parser.add_argument("-activation", dest="activation", type=str, default='relu', help="activation function")
 # parser.add_argument("-MC", dest='MC', type=int, default=10, help="number of monte carlo")
+#note: professor says the number of channels can be changed to 32 or 16
 parser.add_argument("-channel_out1", dest='channel_out1', type=int, default=64, help="number of channels")
 parser.add_argument("-channel_out2", dest='channel_out2', type=int, default=64, help="number of channels")
 parser.add_argument("-k_size", dest='k_size', type=int, default=4, help="size of filter")
@@ -96,10 +98,10 @@ def adjust_learning_rate(learning_rate, optimizer, epoch, decay):
 	
 
 def main():
-
+	#test GPU and CPU
 	use_cuda = torch.cuda.is_available() ## if have gpu or cpu 
 	device = torch.device("cuda" if use_cuda else "cpu")
-	# print(device)
+	print("main.py is running on a",device)
 	if use_cuda:
 		torch.cuda.manual_seed(72)
 
@@ -109,14 +111,14 @@ def main():
 	learning_rate = args.learning_rate
 	
 
-	## Load data
+	## Load data and preprocess
 	DATA_PATH = "./data/"
 	train_loader, test_loader=_load_data(DATA_PATH, args.batch_size)
 
 	##-------------------------------------------------------
 	## please write the code about model initialization below
 	##-------------------------------------------------------
-	model = CNNModel(args1,args2,args3) #kernel size, stride
+	model = CNNModel() #kernel size, stride
 
 	## to gpu or cpu
 	model.to(device)
@@ -125,7 +127,7 @@ def main():
 	## please write the LOSS FUNCTION ##
 	## --------------------------------------------------
 	optimizer = optim.Adam(model.parameters(),lr=learning_rate)  ## optimizer
-	loss_fun =    ## cross entropy loss
+	loss_fun =  nn.CrossEntropyLoss()  ## cross entropy loss
 	
 	##--------------------------------------------
 	## load checkpoint below if you need
@@ -138,7 +140,7 @@ def main():
 	if args.mode == 'train':
 		model = model.train()
 		for epoch in range(num_epoches): #10-50
-			## learning rate
+			## learning rate, this function is written for us such that it does not miss the optimal result
 			adjust_learning_rate(learning_rate, optimizer, epoch, decay)
 
 			for batch_id, (x_batch,y_labels) in enumerate(train_loader):
@@ -150,26 +152,28 @@ def main():
 				##---------------------------------------------------
 				## write loss function below, refer to tutorial slides
 				##----------------------------------------------------
-				loss = 
+				loss = loss_fun(output_y,y_labels)
 				
 
 				##----------------------------------------
 				## write back propagation below
 				##----------------------------------------
-				
+				optimizer.zero_grad()
+				loss.backward()
+				optimizer.step()
+
 
 				##------------------------------------------------------
 				## get the predict result and then compute accuracy below
 				## please refer to defined _compute_accuracy() above
 				##------------------------------------------------------
 				_, y_pred = torch.max(output_y.data, 1)
-				
+				accuracy = _compute_accuracy(y_pred,y_labels)
 				
 				##----------------------------------------------------------
 				## loss.item() or use tensorboard to monitor the loss blow
 				## if use loss.item(), you may use log txt files to save loss
 				##----------------------------------------------------------
-				
 
 			## -------------------------------------------------------------------
 			## save checkpoint below (optional), every "epoch" save one checkpoint
@@ -188,13 +192,14 @@ def main():
 			##------------------------------------
 			## write the predict result below
 			##------------------------------------
-			
+			output_y = model(x_batch)
 
 			##--------------------------------------------------
 			## write code for computing the accuracy below
 			## please refer to defined _compute_accuracy() above
 			##---------------------------------------------------
-			
+			accuracy = _compute_accuracy(output_y,y_labels)
+			print("final testing accuracy is"+str(accuracy))
 	
 		
 
