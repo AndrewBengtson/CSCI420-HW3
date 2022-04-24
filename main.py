@@ -201,7 +201,7 @@ def main():
 			##---------------------------------------------------
 			_, y_pred = torch.max(output_y.data, 1)
 			accuracies.append(_compute_accuracy(y_pred,y_labels))
-		print("final testing accuracy is"+str(sum(accuracies)/len(accuracies)))
+		print("final testing accuracy is "+str(sum(accuracies)/len(accuracies)))
 	
 		
 
