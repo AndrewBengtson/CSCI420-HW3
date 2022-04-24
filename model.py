@@ -18,23 +18,20 @@ class CNNModel(nn.Module):
 		
 		## define CNN layers below
 		#sequential means it will automatically feed
-		self.conv = nn.Sequential( 	nn.Conv2d(1,10,2,2),
+		self.conv = nn.Sequential( 	nn.Conv2d(1,16,2,2),
 									nn.ReLU(),
 									nn.Dropout(p=0.2),
-									nn.Conv2d(10,8,2,2),
+									nn.Conv2d(16,8,2,2),
 									nn.ReLU(),
 									nn.Dropout(p=0.2),
 									nn.Conv2d(8,6,2,2),
-									nn.ReLU(),
-									nn.Dropout(p=0.2),
-									nn.Conv2d(6,4,2,2),
 
 								)
 
 		##------------------------------------------------
 		## write code to define fully connected layer below
 		##------------------------------------------------
-		in_size = 4
+		in_size = 54
 		out_size = 10 #this is because we have 10 different categories we are attempting to predict
 		self.fc = nn.Linear(in_size, out_size)
 		
