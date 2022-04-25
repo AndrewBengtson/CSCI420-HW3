@@ -20,7 +20,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from model import CNNModel
 #from utils import str2bool
-
+writer = SummaryWriter()
 
 ## input hyper-paras
 ## we can add these or comment them out as neccessary
@@ -153,7 +153,7 @@ def main():
 				## write loss function below, refer to tutorial slides
 				##----------------------------------------------------
 				loss = loss_fun(output_y,y_labels)
-				
+				writer.add_scalar("Loss/train", loss, epoch)
 
 				##----------------------------------------
 				## write back propagation below
@@ -174,7 +174,7 @@ def main():
 				## loss.item() or use tensorboard to monitor the loss blow
 				## if use loss.item(), you may use log txt files to save loss
 				##----------------------------------------------------------
-
+				writer.flush()
 			## -------------------------------------------------------------------
 			## save checkpoint below (optional), every "epoch" save one checkpoint
 			## -------------------------------------------------------------------
