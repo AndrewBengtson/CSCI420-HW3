@@ -142,7 +142,7 @@ def main():
 		for epoch in range(num_epoches): #10-50
 			## learning rate, this function is written for us such that it does not miss the optimal result
 			adjust_learning_rate(learning_rate, optimizer, epoch, decay)
-
+			losses = []
 			for batch_id, (x_batch,y_labels) in enumerate(train_loader):
 				x_batch,y_labels = Variable(x_batch).to(device), Variable(y_labels).to(device)
 
@@ -153,8 +153,7 @@ def main():
 				## write loss function below, refer to tutorial slides
 				##----------------------------------------------------
 				loss = loss_fun(output_y,y_labels)
-				writer.add_scalar("Loss/train", loss, epoch)
-
+				losses.append(loss)
 				##----------------------------------------
 				## write back propagation below
 				##----------------------------------------
@@ -174,7 +173,8 @@ def main():
 				## loss.item() or use tensorboard to monitor the loss blow
 				## if use loss.item(), you may use log txt files to save loss
 				##----------------------------------------------------------
-				writer.flush()
+			writer.add_scalar("Loss/train", sum(losses)/len(losses), epoch)
+			writer.flush()
 			## -------------------------------------------------------------------
 			## save checkpoint below (optional), every "epoch" save one checkpoint
 			## -------------------------------------------------------------------
